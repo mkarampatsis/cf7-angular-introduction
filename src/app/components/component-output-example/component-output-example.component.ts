@@ -10,7 +10,7 @@ import {
 
 @Component({
   selector: 'app-component-output-example',
-  imports: [SimpleDatatableComponent],
+  imports: [DialogModule, SimpleDatatableComponent],
   templateUrl: './component-output-example.component.html',
   styleUrl: './component-output-example.component.css'
 })
@@ -63,7 +63,7 @@ export class ComponentOutputExampleComponent {
       <td class="ps-2">{{person.email}}</td>
     </tr>
     <tr>
-      <td class="fw-semibold text-end">Address</td>
+      <td class="fw-semibold text-end">Education</td>
       <td class="ps-2">{{person.education}}</td>
     </tr>
   </table>
