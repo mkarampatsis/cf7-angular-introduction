@@ -15,7 +15,7 @@ export class PersonTableComponent {
   addressOReducation: string = '';
 
   // person = {
-  //   givenName:"Thanasis",
+  //   givenName:"",
   //   surName: "Androutsos",
   //   age: 20,
   //   email:'thanasis@aueb.gr'
