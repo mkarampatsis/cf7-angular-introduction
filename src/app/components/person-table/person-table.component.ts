@@ -37,3 +37,16 @@ export class PersonTableComponent {
     return false
   }
 }
+
+
+// <tr>
+//       <td class="fw-semibold text-end">
+//         {{ (isPerson() && "Address") || "Education" }}
+//       </td>
+//       <td class="ps-2">{{ addressOrEducation }}</td>
+//     </tr><tr>
+//     <td class="fw-semibold text-end">
+//       {{ (isPerson() && "Address") || "Education" }}
+//     </td>
+//     <td class="ps-2">{{ addressOrEducation }}</td>
+//   </tr>
