@@ -61,7 +61,7 @@ export class EpersonReactiveFormComponent {
 
   onSubmit(){
     if (this.form.valid) {
-      console.log(this.form.value);
+      // console.log(this.form.value);
 
       const person: EPerson = {
         givenName: this.form.value.givenName ?? '',
