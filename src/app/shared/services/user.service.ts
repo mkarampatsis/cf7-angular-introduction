@@ -14,4 +14,10 @@ export class UserService {
   registerUser(user:User) {
     return this.http.post<{status: boolean, data: User}>(`${API_URL}`, user)
   }
+
+  check_dublicate_email(email: string) {
+    return this.http.get<{status: boolean, data:User}>(
+      `${API_URL}/check_duplicate_email/${email}`
+    )
+  }
 }
