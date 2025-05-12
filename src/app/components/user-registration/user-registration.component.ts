@@ -3,6 +3,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { 
+  AbstractControl,
   FormControl, 
   FormGroup, 
   ReactiveFormsModule, 
@@ -33,5 +34,26 @@ export class UserRegistrationComponent {
     }),
     password: new FormControl('', [Validators.required, Validators.minLength(5)]),
     confirmPassword: new FormControl('', [Validators.required, Validators.minLength(5)])
-  })
+  },
+    this.passwordConfirmValidator,
+  );
+
+  passwordConfirmValidator(control: AbstractControl): {[key:string]: boolean} | null {
+    const form = control as FormGroup;
+    
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value
+
+    if(password && confirmPassword && password!==confirmPassword) {
+      form.get('confirmPassword')?.setErrors({passwordMismatch: true})
+      return {passwordMismatch: true}
+    }
+    
+    return null
+  }
+
+  onSubmit(){
+    const data = this.form.value;
+    console.log(data);
+  }
 }
