@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +25,13 @@ import { User } from 'src/app/shared/interfaces/user';
 })
 export class UserRegistrationComponent {
   userService = inject(UserService)
+
+  emailErrorMessage = signal('');
+
+  registrationStatus: {success: boolean, message: string} = {
+    success: false,
+    message: 'Not attempted yet'
+  }
 
   form = new FormGroup({
     username: new FormControl('', Validators.required),
@@ -73,9 +80,11 @@ export class UserRegistrationComponent {
       .subscribe({
         next: (response) => {
           console.log("User Saved", response);
+          this.registrationStatus = {success: true, message: "User registrered"}
         },
         error: (response) => {
           console.log("User not Saved", response)
+          this.registrationStatus = {success: false, message: response.data}
         }
       })
     
@@ -84,21 +93,35 @@ export class UserRegistrationComponent {
   check_dublicate_email(){
     const email = this.form.get("email")?.value;
 
+    if (this.form.controls.email.hasError('required')){
+      this.emailErrorMessage.set('Email is required')
+    } else if (this.form.controls.email.hasError('email')){
+      this.emailErrorMessage.set('Email not valid')
+    }
+
     if (email){
       console.log("email", email);
       this.userService.check_dublicate_email(email)
         .subscribe({
           next: (response) => {
-            console.log(response);
-            this.form.get("email")?.setErrors(null)
+            console.log("Email OK",response);
+            // this.form.get("email")?.setErrors(null)
+            // this.emailErrorMessage.set('')
+            this.emailErrorMessage.set('Email not exists')
           },
           error: (response) => {
             console.log(response);
             const message = response.data;
-            console.log(message);
-            this.form.get('email')?.setErrors({dublicateEmail: true})
+            console.log("Email not OK",message);
+            // this.form.get('email')?.setErrors({dublicateEmail: true})
+            this.emailErrorMessage.set('Email exists')
           }
         })
     }
+  }
+
+  registerAnother(){
+    this.form.reset()
+    this.registrationStatus = {success:false, message: "Not attempted yet"}
   }
 }
