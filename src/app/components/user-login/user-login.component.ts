@@ -43,7 +43,7 @@ export class UserLoginComponent {
             username: decodedTokenSubject.username,
             email: decodedTokenSubject.email,
             roles:decodedTokenSubject.roles
-          })
+          });
           console.log("Signal>>>",this.userService.user$());
           this.router.navigate(['user-registration-example'])
         },
