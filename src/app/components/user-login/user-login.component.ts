@@ -5,8 +5,10 @@ import {
   ReactiveFormsModule,
   Validators
 } from "@angular/forms";
-import { Credentials } from 'src/app/shared/interfaces/user';
+import { Credentials, LoggedInUser } from 'src/app/shared/interfaces/user';
 import { UserService } from 'src/app/shared/services/user.service';
+import { jwtDecode } from 'jwt-decode'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-login',
@@ -15,7 +17,8 @@ import { UserService } from 'src/app/shared/services/user.service';
   styleUrl: './user-login.component.css'
 })
 export class UserLoginComponent {
-  userService = inject(UserService)
+  userService = inject(UserService);
+  router = inject(Router);
 
   form = new FormGroup({
     username: new FormControl('', Validators.required),
@@ -30,6 +33,19 @@ export class UserLoginComponent {
       .subscribe({
         next: (response) => {
           console.log("Logged in",response)
+          const access_token = response.data;
+          localStorage.setItem('access_token', access_token);
+          
+          const decodedTokenSubject = jwtDecode(access_token) as unknown as LoggedInUser
+          console.log(decodedTokenSubject);
+
+          this.userService.user$.set({
+            username: decodedTokenSubject.username,
+            email: decodedTokenSubject.email,
+            roles:decodedTokenSubject.roles
+          })
+          console.log("Signal>>>",this.userService.user$());
+          this.router.navigate(['user-registration-example'])
         },
         error: (error) => {
           console.log("Not logged in",error)
