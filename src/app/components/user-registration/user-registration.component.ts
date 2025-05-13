@@ -26,8 +26,6 @@ import { User } from 'src/app/shared/interfaces/user';
 export class UserRegistrationComponent {
   userService = inject(UserService)
 
-  emailErrorMessage = signal('');
-
   registrationStatus: {success: boolean, message: string} = {
     success: false,
     message: 'Not attempted yet'
@@ -71,8 +69,8 @@ export class UserRegistrationComponent {
       'surname': this.form.get('surname')?.value || '',
       'email':this.form.get('email')?.value || '',
       'address': {
-        'area':this.form.get('area')?.value || '',
-        'road': this.form.get('road')?.value || ''
+        'area':this.form.controls.address.controls.area?.value || '',
+        'road': this.form.controls.address.controls.road?.value || ''
       }
     }
     console.log(data);
@@ -83,8 +81,8 @@ export class UserRegistrationComponent {
           this.registrationStatus = {success: true, message: "User registrered"}
         },
         error: (response) => {
-          console.log("User not Saved", response)
-          this.registrationStatus = {success: false, message: response.data}
+          console.log("User not Saved", response.error.data.errorResponse.errmsg)
+          this.registrationStatus = {success: false, message: response.error.data.errorResponse.errmsg}
         }
       })
     
@@ -93,28 +91,19 @@ export class UserRegistrationComponent {
   check_dublicate_email(){
     const email = this.form.get("email")?.value;
 
-    if (this.form.controls.email.hasError('required')){
-      this.emailErrorMessage.set('Email is required')
-    } else if (this.form.controls.email.hasError('email')){
-      this.emailErrorMessage.set('Email not valid')
-    }
-
     if (email){
       console.log("email", email);
       this.userService.check_dublicate_email(email)
         .subscribe({
           next: (response) => {
             console.log("Email OK",response);
-            // this.form.get("email")?.setErrors(null)
-            // this.emailErrorMessage.set('')
-            this.emailErrorMessage.set('Email not exists')
+            this.form.get("email")?.setErrors(null)
           },
           error: (response) => {
             console.log(response);
             const message = response.data;
             console.log("Email not OK",message);
-            // this.form.get('email')?.setErrors({dublicateEmail: true})
-            this.emailErrorMessage.set('Email exists')
+            this.form.get('email')?.setErrors({dublicateEmail: true})
           }
         })
     }
